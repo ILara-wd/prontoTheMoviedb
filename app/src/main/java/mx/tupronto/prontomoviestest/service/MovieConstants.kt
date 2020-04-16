@@ -10,6 +10,8 @@ class MovieConstants {
 
         const val LANGUAGE = "es-MX"
 
+        const val SORT_BY = "popularity.desc"
+
     }
 
 }

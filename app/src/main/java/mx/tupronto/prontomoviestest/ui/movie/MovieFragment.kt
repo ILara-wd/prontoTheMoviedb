@@ -14,6 +14,7 @@ import mx.tupronto.prontomoviestest.R
 import mx.tupronto.prontomoviestest.ScreenState
 import mx.tupronto.prontomoviestest.service.data.Movie
 
+
 class MovieFragment : Fragment() {
 
     private lateinit var movieViewModel: MovieViewModel
@@ -58,11 +59,11 @@ class MovieFragment : Fragment() {
     }
 
     private fun addFavorite() {
-        Toast.makeText(activity, "Movie Add", Toast.LENGTH_LONG).show()
+        //Toast.makeText(activity, "Movie Add", Toast.LENGTH_LONG).show()
     }
 
     private fun removeFavorite() {
-        Toast.makeText(activity, "Movie Remove", Toast.LENGTH_LONG).show()
+        //Toast.makeText(activity, "Movie Remove", Toast.LENGTH_LONG).show()
     }
 
     private fun showProgress() {
