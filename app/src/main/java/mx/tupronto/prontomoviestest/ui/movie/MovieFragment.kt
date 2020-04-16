@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import mx.tupronto.prontomoviestest.R
 import mx.tupronto.prontomoviestest.ScreenState
-import mx.tupronto.prontomoviestest.service.data.Movie
+import mx.tupronto.prontomoviestest.service.data.MovieInput
 
 
 class MovieFragment : Fragment() {
@@ -80,7 +80,7 @@ class MovieFragment : Fragment() {
         Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
     }
 
-    private fun setItems(items: List<Movie>) {
+    private fun setItems(items: List<MovieInput>) {
         rvMovies.layoutManager = GridLayoutManager(activity, 2)
         rvMovies.adapter = MovieAdapter(requireActivity(), items, movieViewModel::onItemClicked)
     }

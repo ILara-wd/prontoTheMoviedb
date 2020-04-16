@@ -6,9 +6,9 @@ import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import mx.tupronto.prontomoviestest.service.data.APIError
 import mx.tupronto.prontomoviestest.service.data.MovieGenreInput
 import mx.tupronto.prontomoviestest.service.data.MovieGenreOutput
-import mx.tupronto.prontomoviestest.service.model.APIError
 
 object MovieWS {
 
@@ -37,14 +37,26 @@ object MovieWS {
                 val body: MovieGenreInput? = response.body()
 
                 if (body?.total_results.toString().toInt() < 0) {
-                    handler(APIError(678, "no movies available", false), null)
+                    handler(
+                        APIError(
+                            678,
+                            "no movies available",
+                            false
+                        ), null
+                    )
                     return@launch
                 }
 
                 handler(null, body)
 
             } catch (e: java.lang.Exception) {
-                handler(APIError(e.hashCode(), e.localizedMessage, false), null)
+                handler(
+                    APIError(
+                        e.hashCode(),
+                        e.localizedMessage,
+                        false
+                    ), null
+                )
             }
         }
 

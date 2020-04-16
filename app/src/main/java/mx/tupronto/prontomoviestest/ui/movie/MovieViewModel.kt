@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import mx.tupronto.prontomoviestest.ScreenState
-import mx.tupronto.prontomoviestest.service.data.Movie
-import mx.tupronto.prontomoviestest.service.model.APIError
+import mx.tupronto.prontomoviestest.service.data.APIError
+import mx.tupronto.prontomoviestest.service.data.MovieInput
 
 class MovieViewModel(private val movieInteract: MovieInteract) : ViewModel(), ImplMovieInteract {
 
@@ -22,7 +22,7 @@ class MovieViewModel(private val movieInteract: MovieInteract) : ViewModel(), Im
             return _movieState
         }
 
-    override fun getResponseData(data: List<Movie>?) {
+    override fun getResponseData(data: List<MovieInput>?) {
         _movieState.value = ScreenState.Render(MovieState.ShowItems(data.orEmpty()))
     }
 
@@ -31,7 +31,7 @@ class MovieViewModel(private val movieInteract: MovieInteract) : ViewModel(), Im
             ScreenState.Render(MovieState.ShowMessage(error.status_message.toString()))
     }
 
-    fun onItemClicked(movie: Movie, isAddFavorite: Boolean) {
+    fun onItemClicked(movie: MovieInput, isAddFavorite: Boolean) {
         if (isAddFavorite) {
             _movieState.value = ScreenState.Render(MovieState.AddFavorite(movie))
         } else {

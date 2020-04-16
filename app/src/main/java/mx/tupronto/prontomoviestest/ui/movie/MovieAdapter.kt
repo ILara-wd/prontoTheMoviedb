@@ -10,12 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import mx.tupronto.prontomoviestest.MovieTools
 import mx.tupronto.prontomoviestest.R
 import mx.tupronto.prontomoviestest.service.MovieConstants
-import mx.tupronto.prontomoviestest.service.data.Movie
+import mx.tupronto.prontomoviestest.service.data.MovieInput
 
 class MovieAdapter(
     private val mActivity: Activity,
-    private val items: List<Movie>,
-    private val listener: (Movie, Boolean) -> Unit
+    private val items: List<MovieInput>,
+    private val listener: (MovieInput, Boolean) -> Unit
 ) :
     RecyclerView.Adapter<MovieAdapter.MainViewHolder>() {
 

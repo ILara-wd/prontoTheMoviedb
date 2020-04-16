@@ -4,10 +4,10 @@ class MovieGenreInput {
     val page: Int? = null
     val total_results: Int? = null
     val total_pages: Int? = null
-    val results: List<Movie>? = null
+    val results: List<MovieInput>? = null
 }
 
-class Movie {
+class MovieInput {
     val popularity: Double? = null
     val vote_count: Int? = null
     val video: Boolean? = null

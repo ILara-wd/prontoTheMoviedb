@@ -1,4 +1,4 @@
-package mx.tupronto.prontomoviestest.service.model
+package mx.tupronto.prontomoviestest.service.data
 
 class APIError() {
 
