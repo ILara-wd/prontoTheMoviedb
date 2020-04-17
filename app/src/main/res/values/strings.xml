@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ProntoMoviesTest</string>
+    <string name="title_movie">Movies</string>
+    <string name="title_favorite">Favorite</string>
+    <string name="content_description_selected">selected</string>
+    <string name="content_description">content_description</string>
+    <string name="content_description_unselected">unselected</string>
 </resources>
