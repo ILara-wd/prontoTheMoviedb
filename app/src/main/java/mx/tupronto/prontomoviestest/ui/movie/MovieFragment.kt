@@ -14,7 +14,6 @@ import mx.tupronto.prontomoviestest.R
 import mx.tupronto.prontomoviestest.ScreenState
 import mx.tupronto.prontomoviestest.service.data.MovieInput
 
-
 class MovieFragment : Fragment() {
 
     private lateinit var movieViewModel: MovieViewModel
@@ -29,12 +28,12 @@ class MovieFragment : Fragment() {
 
         movieViewModel = ViewModelProviders.of(
             this,
-            MovieViewModelFactory(MovieInteract())
+            MovieViewModelFactory(MovieInteract(), requireActivity().application)
         )[MovieViewModel::class.java]
 
         val root = inflater.inflate(R.layout.fragment_movie, container, false)
         rvMovies = root.findViewById(R.id.rv_movie)
-        progress = root.findViewById(R.id.progress)
+        progress = root.findViewById(R.id.movie_progress)
 
         movieViewModel.movieState.observe(::getLifecycle, ::updateUI)
 
@@ -59,11 +58,11 @@ class MovieFragment : Fragment() {
     }
 
     private fun addFavorite() {
-        //Toast.makeText(activity, "Movie Add", Toast.LENGTH_LONG).show()
+        Toast.makeText(activity, "Movie Add", Toast.LENGTH_LONG).show()
     }
 
     private fun removeFavorite() {
-        //Toast.makeText(activity, "Movie Remove", Toast.LENGTH_LONG).show()
+        Toast.makeText(activity, "Movie Remove", Toast.LENGTH_LONG).show()
     }
 
     private fun showProgress() {

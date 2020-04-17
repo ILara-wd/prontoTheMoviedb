@@ -1,4 +1,4 @@
-package mx.tupronto.prontomoviestest.ui.movie
+package mx.tupronto.prontomoviestest.ui.favorite
 
 import android.app.Activity
 import android.view.LayoutInflater
@@ -10,52 +10,40 @@ import androidx.recyclerview.widget.RecyclerView
 import mx.tupronto.prontomoviestest.MovieTools
 import mx.tupronto.prontomoviestest.R
 import mx.tupronto.prontomoviestest.model.Movie
-import mx.tupronto.prontomoviestest.repository.MovieRepository
 import mx.tupronto.prontomoviestest.service.MovieConstants
-import mx.tupronto.prontomoviestest.service.data.MovieInput
 
-class MovieAdapter(
+class FavoriteAdapter(
     private val mActivity: Activity,
-    private val items: List<MovieInput>,
-    private val listener: (MovieInput, Boolean) -> Unit
+    private val items: List<Movie>,
+    private val removeFavorite: (Movie) -> Unit
 ) :
-    RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
+    RecyclerView.Adapter<FavoriteAdapter.FavoriteViewHolder>() {
 
-    private var repository = MovieRepository(mActivity.application)
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteViewHolder {
         val v = LayoutInflater.from(parent.context)
             .inflate(R.layout.view_movie_item, parent, false)
-        return MovieViewHolder(v)
+        return FavoriteViewHolder(v)
     }
 
-    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: FavoriteViewHolder, position: Int) {
         val movie = items[position]
 
-        compareMovieFavorite(movie, holder.ivMoviePoster)
         holder.tvTitle.text = movie.title
+
+        holder.ivFavorite.setImageResource(R.drawable.ic_favorite_red)
+        holder.ivFavorite.contentDescription =
+            mActivity.getString(R.string.content_description_selected)
         holder.ivFavorite.setOnClickListener {
-            val isAddFavorite = changeIconFavorite(holder.ivFavorite)
-            listener(movie, isAddFavorite)
+            changeIconFavorite(holder.ivFavorite)
+            removeFavorite(movie)
         }
+
         MovieTools().showImageByUrl(
-            MovieConstants.IMAGE_URL + movie.poster_path.toString(),
+            MovieConstants.IMAGE_URL + movie.posterPath,
             holder.ivMoviePoster,
             mActivity
         )
 
-    }
-
-    private fun compareMovieFavorite(movie: MovieInput, imageView: ImageView) {
-        if (repository.getMovieById(movie.id.toString().toInt()).value == Movie(movie)) {
-            imageView.setImageResource(R.drawable.ic_favorite_red)
-            imageView.contentDescription =
-                mActivity.getString(R.string.content_description_selected)
-        } else {
-            imageView.setImageResource(R.drawable.ic_favorite_border)
-            imageView.contentDescription =
-                mActivity.getString(R.string.content_description_unselected)
-        }
     }
 
     private fun changeIconFavorite(imageView: ImageView): Boolean {
@@ -74,7 +62,8 @@ class MovieAdapter(
 
     override fun getItemCount(): Int = items.size
 
-    class MovieViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class FavoriteViewHolder internal constructor(itemView: View) :
+        RecyclerView.ViewHolder(itemView) {
         var ivMoviePoster: ImageView = itemView.findViewById(R.id.iv_movie_poster)
         var tvTitle: TextView = itemView.findViewById(R.id.tv_title)
         var ivFavorite: ImageView = itemView.findViewById(R.id.iv_favorite)

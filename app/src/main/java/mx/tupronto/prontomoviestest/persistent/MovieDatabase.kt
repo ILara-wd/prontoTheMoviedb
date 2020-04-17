@@ -7,26 +7,35 @@ import androidx.room.RoomDatabase
 import mx.tupronto.prontomoviestest.dao.MovieDao
 import mx.tupronto.prontomoviestest.model.Movie
 
-@Database(entities = [Movie::class], version = 1)
+@Database(entities = arrayOf(Movie::class), version = 1, exportSchema = false)
 abstract class MovieDatabase : RoomDatabase() {
+
     abstract fun movieDao(): MovieDao?
 
     companion object {
-        private const val DATABASE_NAME = "pronto_database"
+        var TEST_MODE = false
+        private const val databaseName = "database_pronto"
 
-        @Volatile
-        private var INSTANCE: MovieDatabase? = null
+        private var db: MovieDatabase? = null
+        private var dbInstance: MovieDao? = null
 
-        fun getInstance(context: Context): MovieDatabase? {
-            INSTANCE ?: synchronized(this) {
-                INSTANCE = Room.databaseBuilder(
-                    context.applicationContext,
-                    MovieDatabase::class.java,
-                    DATABASE_NAME
-                ).build()
+        fun getInstance(context: Context): MovieDao? {
+            if (dbInstance == null) {
+                if (TEST_MODE) {
+                    db = Room.inMemoryDatabaseBuilder(context, MovieDatabase::class.java)
+                        .allowMainThreadQueries().build()
+                    dbInstance = db?.movieDao()
+                } else {
+                    db = Room.databaseBuilder(context, MovieDatabase::class.java, databaseName)
+                        .build()
+                    dbInstance = db?.movieDao()
+                }
             }
-            return INSTANCE
+            return dbInstance
+        }
+
+        private fun close() {
+            db?.close()
         }
     }
-
 }

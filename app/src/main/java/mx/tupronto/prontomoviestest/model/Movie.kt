@@ -3,55 +3,67 @@ package mx.tupronto.prontomoviestest.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import mx.tupronto.prontomoviestest.service.data.MovieInput
 
 @Entity(tableName = Movie.TABLE_NAME)
-class Movie {
-
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "movie_id")
-    var contactId: Int = 0
+data class Movie(
 
     @ColumnInfo(name = "popularity")
-    val popularity: Double? = null
+    val popularity: Double,
 
     @ColumnInfo(name = "vote_count")
-    val voteCount: Int? = null
+    val voteCount: Int,
 
     @ColumnInfo(name = "video")
-    val video: Boolean? = null
+    val video: Boolean,
 
     @ColumnInfo(name = "poster_path")
-    val posterPath: String? = null
-
-    @ColumnInfo(name = "id")
-    val id: Int? = null
+    val posterPath: String,
 
     @ColumnInfo(name = "adult")
-    val adult: Boolean? = null
+    val adult: Boolean,
 
     @ColumnInfo(name = "backdrop_path")
-    val backdropPath: String? = null
+    val backdropPath: String,
 
     @ColumnInfo(name = "original_language")
-    val originalLanguage: String? = null
+    val originalLanguage: String,
 
     @ColumnInfo(name = "original_title")
-    val originalTitle: String? = null
-
-    @ColumnInfo(name = "genre_ids")
-    val genreIds: List<Int>? = null
+    val originalTitle: String,
 
     @ColumnInfo(name = "title")
-    val title: String? = null
+    val title: String,
 
     @ColumnInfo(name = "vote_average")
-    val voteAverage: Double? = null
+    val voteAverage: Double,
 
     @ColumnInfo(name = "overview")
-    val overview: String? = null
+    val overview: String,
 
     @ColumnInfo(name = "release_date")
-    val releaseDate: String? = null
+    val releaseDate: String,
+
+    @PrimaryKey(autoGenerate = false)
+    @ColumnInfo(name = "id")
+    var id: Int = 0
+
+) {
+    constructor(movieInput: MovieInput) : this(
+        movieInput.popularity.toString().toDouble(),
+        movieInput.vote_count.toString().toInt(),
+        movieInput.video.toString().toBoolean(),
+        movieInput.poster_path.toString(),
+        movieInput.adult.toString().toBoolean(),
+        movieInput.backdrop_path.toString(),
+        movieInput.original_language.toString(),
+        movieInput.original_title.toString(),
+        movieInput.title.toString(),
+        movieInput.vote_average.toString().toDouble(),
+        movieInput.overview.toString(),
+        movieInput.release_date.toString(),
+        movieInput.id.toString().toInt()
+    )
 
     companion object {
         const val TABLE_NAME = "movie"
