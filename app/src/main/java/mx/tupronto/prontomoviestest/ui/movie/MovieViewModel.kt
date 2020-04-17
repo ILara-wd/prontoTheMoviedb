@@ -24,14 +24,14 @@ class MovieViewModel(
             if (!::_movieState.isInitialized) {
                 _movieState = MutableLiveData()
                 _movieState.value = ScreenState.Loading
-                movieInteract.getMovies(this)
+                movieInteract.setInterfaceInteract(this)
                 repository = MovieRepository(application)
             }
             return _movieState
         }
 
-    override fun getResponseData(data: List<MovieInput>?) {
-        _movieState.value = ScreenState.Render(MovieState.ShowItems(data.orEmpty()))
+    override fun getResponseData(data: MutableList<MovieInput>?, isFirstPage: Boolean) {
+        _movieState.value = ScreenState.Render(MovieState.ShowItems(data, isFirstPage))
     }
 
     override fun trowError(error: APIError) {
@@ -51,6 +51,10 @@ class MovieViewModel(
             _movieState.value = ScreenState.Render(MovieState.RemoveFavorite(movieInput))
         }
 
+    }
+
+    fun getMovies(page: Int) {
+        movieInteract.getMovies(page)
     }
 
 }

@@ -16,7 +16,7 @@ import mx.tupronto.prontomoviestest.service.data.MovieInput
 
 class MovieAdapter(
     private val mActivity: Activity,
-    private val items: List<MovieInput>,
+    private val items: MutableList<MovieInput>,
     private val listener: (MovieInput, Boolean) -> Unit
 ) :
     RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
@@ -44,6 +44,17 @@ class MovieAdapter(
             mActivity
         )
 
+    }
+
+    fun addMoviesPaginate(moreMovies: List<MovieInput>) {
+        for (item in moreMovies) {
+            addMovie(item)
+        }
+    }
+
+    private fun addMovie(movie: MovieInput) {
+        items.add(movie)
+        notifyItemInserted(items.size - 1)
     }
 
     private fun compareMovieFavorite(movie: MovieInput, imageView: ImageView) {

@@ -4,6 +4,6 @@ import mx.tupronto.prontomoviestest.service.data.APIError
 import mx.tupronto.prontomoviestest.service.data.MovieInput
 
 interface ImplMovieInteract {
-    fun getResponseData(data: List<MovieInput>?)
+    fun getResponseData(data: MutableList<MovieInput>?, isFirstPage: Boolean)
     fun trowError(error: APIError)
 }

@@ -19,6 +19,10 @@ class MovieFragment : Fragment() {
     private lateinit var movieViewModel: MovieViewModel
     private lateinit var rvMovies: RecyclerView
     private lateinit var progress: ProgressBar
+    private var loadMovies: Boolean = true
+    private lateinit var managerLayout: GridLayoutManager
+    private var offset = 1
+    private lateinit var adapter: MovieAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,6 +41,8 @@ class MovieFragment : Fragment() {
 
         movieViewModel.movieState.observe(::getLifecycle, ::updateUI)
 
+        movieViewModel.getMovies(offset)
+
         return root
     }
 
@@ -50,7 +56,7 @@ class MovieFragment : Fragment() {
     private fun processRenderState(renderState: MovieState) {
         hideProgress()
         when (renderState) {
-            is MovieState.ShowItems -> setItems(renderState.movies)
+            is MovieState.ShowItems -> setItems(renderState.movies, renderState.isFirstPage)
             is MovieState.ShowMessage -> showMessage(renderState.message)
             is MovieState.AddFavorite -> addFavorite()
             is MovieState.RemoveFavorite -> removeFavorite()
@@ -58,11 +64,11 @@ class MovieFragment : Fragment() {
     }
 
     private fun addFavorite() {
-        Toast.makeText(activity, "Movie Add", Toast.LENGTH_LONG).show()
+        /*Toast.makeText(activity, "Movie Add", Toast.LENGTH_LONG).show()*/
     }
 
     private fun removeFavorite() {
-        Toast.makeText(activity, "Movie Remove", Toast.LENGTH_LONG).show()
+        /*Toast.makeText(activity, "Movie Remove", Toast.LENGTH_LONG).show()*/
     }
 
     private fun showProgress() {
@@ -79,9 +85,45 @@ class MovieFragment : Fragment() {
         Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
     }
 
-    private fun setItems(items: List<MovieInput>) {
-        rvMovies.layoutManager = GridLayoutManager(activity, 2)
-        rvMovies.adapter = MovieAdapter(requireActivity(), items, movieViewModel::onItemClicked)
+    private fun setItems(items: MutableList<MovieInput>?, isFirstPage: Boolean) {
+        if (isFirstPage) {
+            managerLayout = GridLayoutManager(activity, 2)
+            rvMovies.layoutManager = managerLayout
+            adapter = MovieAdapter(
+                requireActivity(),
+                items.orEmpty() as MutableList<MovieInput>,
+                movieViewModel::onItemClicked
+            )
+            rvMovies.adapter = adapter
+        } else {
+            adapter.addMoviesPaginate(items.orEmpty())
+            loadMovies = true
+        }
+        rvMovies.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                onScrolled(dy)
+            }
+        })
+    }
+
+    private fun onScrolled(dy: Int) {
+        if (dy > 0) {
+            paginate()
+        }
+    }
+
+    private fun paginate() {
+        val visibleItemCount = managerLayout.childCount
+        val totalItemCount = managerLayout.itemCount
+        val pastVisibleItems = managerLayout.findFirstVisibleItemPosition()
+
+        if (loadMovies) {
+            if (visibleItemCount + pastVisibleItems >= totalItemCount - 5) {
+                loadMovies = false
+                offset += 1
+                movieViewModel.getMovies(offset)
+            }
+        }
     }
 
 }
