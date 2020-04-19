@@ -1,47 +1,36 @@
 package mx.tupronto.prontomoviestest.ui.favorite
 
-import android.app.Application
+import android.os.AsyncTask
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import mx.tupronto.prontomoviestest.data.Movie
 import mx.tupronto.prontomoviestest.repository.MovieRepository
-import mx.tupronto.prontomoviestest.utility.ScreenState
 
-class FavoriteViewModel(private val application: Application) : ViewModel() {
+class FavoriteViewModel(private val movieRepository: MovieRepository) : ViewModel() {
 
-    private lateinit var repository: MovieRepository
-    private lateinit var _movieState: MutableLiveData<ScreenState<FavoriteState>>
+    private val users: LiveData<MutableList<Movie?>?>? = findMovies()
 
-    val favoriteState: LiveData<ScreenState<FavoriteState>>
-        get() {
-            if (!::_movieState.isInitialized) {
-                _movieState = MutableLiveData()
-                _movieState.value = ScreenState.Loading
-                //repository = MovieRepository()
-                //showFavorite(repository.getMovies().value.orEmpty())
-            }
-            return _movieState
-        }
+    private fun findMovies(): LiveData<MutableList<Movie?>?>? {
+        return movieRepository.findAll()
+    }
 
-    private fun showFavorite(movies: List<Movie>) {
-        //repository.insert(movie)
-        _movieState.value = ScreenState.Render(FavoriteState.ShowMovies(movies))
+    fun getMovies(): LiveData<MutableList<Movie?>?>? {
+        return users
     }
 
     fun removeFavorite(movie: Movie) {
-        repository.delete(movie)
-        //_movieState.value =
-        //ScreenState.Render(FavoriteState.ShowMovies(repository.getMovies().value.orEmpty()))
+        AsyncTask.execute {
+            movieRepository.delete(movie)
+        }
     }
 
 }
 
 @Suppress("UNCHECKED_CAST")
-class FavoriteViewModelFactory(private val application: Application) :
+class FavoriteViewModelFactory(private val movieRepository: MovieRepository) :
     ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return FavoriteViewModel(application) as T
+        return FavoriteViewModel(movieRepository) as T
     }
 }

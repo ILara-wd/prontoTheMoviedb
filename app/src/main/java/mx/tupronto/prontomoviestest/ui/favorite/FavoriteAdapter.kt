@@ -11,11 +11,12 @@ import mx.tupronto.prontomoviestest.R
 import mx.tupronto.prontomoviestest.data.Movie
 import mx.tupronto.prontomoviestest.service.MovieConstants
 import mx.tupronto.prontomoviestest.utility.MovieTools
+import kotlin.reflect.KFunction1
 
 class FavoriteAdapter(
     private val mActivity: Activity,
     private val items: List<Movie>,
-    private val removeFavorite: (Movie) -> Unit
+    private val onClickItem: KFunction1<Movie, Unit>
 ) :
     RecyclerView.Adapter<FavoriteAdapter.FavoriteViewHolder>() {
 
@@ -34,8 +35,7 @@ class FavoriteAdapter(
         holder.ivFavorite.contentDescription =
             mActivity.getString(R.string.content_description_selected)
         holder.ivFavorite.setOnClickListener {
-            changeIconFavorite(holder.ivFavorite)
-            removeFavorite(movie)
+            onClickItem(movie)
         }
 
         MovieTools().showImageByUrl(
@@ -44,20 +44,6 @@ class FavoriteAdapter(
             mActivity
         )
 
-    }
-
-    private fun changeIconFavorite(imageView: ImageView): Boolean {
-        return if (imageView.contentDescription.toString() == mActivity.getString(R.string.content_description_selected)) {
-            imageView.contentDescription =
-                mActivity.getString(R.string.content_description_unselected)
-            imageView.setImageResource(R.drawable.ic_favorite_border)
-            false
-        } else {
-            imageView.setImageResource(R.drawable.ic_favorite_red)
-            imageView.contentDescription =
-                mActivity.getString(R.string.content_description_selected)
-            true
-        }
     }
 
     override fun getItemCount(): Int = items.size
