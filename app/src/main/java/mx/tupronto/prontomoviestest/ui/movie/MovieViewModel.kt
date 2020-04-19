@@ -5,11 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import mx.tupronto.prontomoviestest.ScreenState
-import mx.tupronto.prontomoviestest.model.Movie
+import mx.tupronto.prontomoviestest.data.Movie
 import mx.tupronto.prontomoviestest.repository.MovieRepository
 import mx.tupronto.prontomoviestest.service.data.APIError
 import mx.tupronto.prontomoviestest.service.data.MovieInput
+import mx.tupronto.prontomoviestest.utility.ScreenState
 
 class MovieViewModel(
     private val movieInteract: MovieInteract,
@@ -25,7 +25,7 @@ class MovieViewModel(
                 _movieState = MutableLiveData()
                 _movieState.value = ScreenState.Loading
                 movieInteract.setInterfaceInteract(this)
-                repository = MovieRepository(application)
+                /*repository = MovieRepository()*/
             }
             return _movieState
         }

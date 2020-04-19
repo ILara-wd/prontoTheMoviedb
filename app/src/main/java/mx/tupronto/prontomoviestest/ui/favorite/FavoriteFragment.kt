@@ -11,8 +11,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import mx.tupronto.prontomoviestest.R
-import mx.tupronto.prontomoviestest.ScreenState
-import mx.tupronto.prontomoviestest.model.Movie
+import mx.tupronto.prontomoviestest.data.Movie
+import mx.tupronto.prontomoviestest.utility.ScreenState
 
 class FavoriteFragment : Fragment() {
 

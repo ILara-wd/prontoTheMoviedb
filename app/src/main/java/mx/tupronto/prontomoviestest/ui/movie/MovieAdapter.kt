@@ -7,12 +7,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import mx.tupronto.prontomoviestest.MovieTools
 import mx.tupronto.prontomoviestest.R
-import mx.tupronto.prontomoviestest.model.Movie
-import mx.tupronto.prontomoviestest.repository.MovieRepository
 import mx.tupronto.prontomoviestest.service.MovieConstants
 import mx.tupronto.prontomoviestest.service.data.MovieInput
+import mx.tupronto.prontomoviestest.utility.MovieTools
 
 class MovieAdapter(
     private val mActivity: Activity,
@@ -21,7 +19,7 @@ class MovieAdapter(
 ) :
     RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
-    private var repository = MovieRepository(mActivity.application)
+    /*private var repository = MovieRepository(mActivity.application)*/
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val v = LayoutInflater.from(parent.context)
@@ -32,7 +30,7 @@ class MovieAdapter(
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         val movie = items[position]
 
-        compareMovieFavorite(movie, holder.ivMoviePoster)
+        /*compareMovieFavorite(movie, holder.ivMoviePoster)*/
         holder.tvTitle.text = movie.title
         holder.ivFavorite.setOnClickListener {
             val isAddFavorite = changeIconFavorite(holder.ivFavorite)
@@ -57,8 +55,11 @@ class MovieAdapter(
         notifyItemInserted(items.size - 1)
     }
 
-    private fun compareMovieFavorite(movie: MovieInput, imageView: ImageView) {
-        if (repository.getMovieById(movie.id.toString().toInt()).value == Movie(movie)) {
+/*    private fun compareMovieFavorite(movie: MovieInput, imageView: ImageView) {
+        if (repository.getMovieById(movie.id.toString().toInt()).value == Movie(
+                movie
+            )
+        ) {
             imageView.setImageResource(R.drawable.ic_favorite_red)
             imageView.contentDescription =
                 mActivity.getString(R.string.content_description_selected)
@@ -67,7 +68,7 @@ class MovieAdapter(
             imageView.contentDescription =
                 mActivity.getString(R.string.content_description_unselected)
         }
-    }
+    }*/
 
     private fun changeIconFavorite(imageView: ImageView): Boolean {
         return if (imageView.contentDescription.toString() == mActivity.getString(R.string.content_description_selected)) {

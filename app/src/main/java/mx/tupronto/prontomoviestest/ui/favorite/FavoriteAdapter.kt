@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import mx.tupronto.prontomoviestest.MovieTools
 import mx.tupronto.prontomoviestest.R
-import mx.tupronto.prontomoviestest.model.Movie
+import mx.tupronto.prontomoviestest.data.Movie
 import mx.tupronto.prontomoviestest.service.MovieConstants
+import mx.tupronto.prontomoviestest.utility.MovieTools
 
 class FavoriteAdapter(
     private val mActivity: Activity,

@@ -11,8 +11,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import mx.tupronto.prontomoviestest.R
-import mx.tupronto.prontomoviestest.ScreenState
 import mx.tupronto.prontomoviestest.service.data.MovieInput
+import mx.tupronto.prontomoviestest.utility.ScreenState
 
 class MovieFragment : Fragment() {
 
