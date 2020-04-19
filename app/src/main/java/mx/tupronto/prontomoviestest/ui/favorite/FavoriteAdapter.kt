@@ -15,7 +15,7 @@ import kotlin.reflect.KFunction1
 
 class FavoriteAdapter(
     private val mActivity: Activity,
-    private val items: List<Movie>,
+    private val items: MutableList<Movie>,
     private val onClickItem: KFunction1<Movie, Unit>
 ) :
     RecyclerView.Adapter<FavoriteAdapter.FavoriteViewHolder>() {
@@ -44,6 +44,11 @@ class FavoriteAdapter(
             mActivity
         )
 
+    }
+
+    fun removeItem(position: Movie) {
+        items.remove(position)
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = items.size
