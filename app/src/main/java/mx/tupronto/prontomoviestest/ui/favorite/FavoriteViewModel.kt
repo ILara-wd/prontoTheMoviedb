@@ -9,14 +9,14 @@ import mx.tupronto.prontomoviestest.repository.MovieRepository
 
 class FavoriteViewModel(private val movieRepository: MovieRepository) : ViewModel() {
 
-    private val users: LiveData<MutableList<Movie?>?>? = findMovies()
+    private val movies: LiveData<MutableList<Movie?>?>? = findMovies()
 
     private fun findMovies(): LiveData<MutableList<Movie?>?>? {
         return movieRepository.findAll()
     }
 
     fun getMovies(): LiveData<MutableList<Movie?>?>? {
-        return users
+        return movies
     }
 
     fun removeFavorite(movie: Movie) {

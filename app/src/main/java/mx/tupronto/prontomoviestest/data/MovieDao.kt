@@ -17,9 +17,9 @@ interface MovieDao {
     fun findAll(): LiveData<List<Movie?>?>?
 
     @Insert(onConflict = REPLACE)
-    fun insert(product: Movie?): Long
+    fun insert(movie: Movie?): Long
 
     @Delete
-    fun delete(product: Movie?): Int
+    fun delete(movie: Movie?): Int
 
 }
