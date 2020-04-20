@@ -1,4 +1,4 @@
-package mx.tupronto.prontomoviestest
+package mx.tupronto.prontomoviestest.utility
 
 sealed class ScreenState<out T> {
     object Loading : ScreenState<Nothing>()

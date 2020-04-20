@@ -1,47 +1,61 @@
 package mx.tupronto.prontomoviestest.ui.favorite
 
-import android.app.Application
+import android.os.AsyncTask
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import mx.tupronto.prontomoviestest.ScreenState
-import mx.tupronto.prontomoviestest.model.Movie
+import mx.tupronto.prontomoviestest.data.Movie
 import mx.tupronto.prontomoviestest.repository.MovieRepository
+import mx.tupronto.prontomoviestest.utility.observeOnce
 
-class FavoriteViewModel(private val application: Application) : ViewModel() {
+class FavoriteViewModel(private val movieRepository: MovieRepository) : ViewModel() {
 
-    private lateinit var repository: MovieRepository
-    private lateinit var _movieState: MutableLiveData<ScreenState<FavoriteState>>
+    private val movies: LiveData<MutableList<Movie?>?>? = findMovies()
 
-    val favoriteState: LiveData<ScreenState<FavoriteState>>
+    private lateinit var _favoriteState: MutableLiveData<FavoriteState>
+
+    val favoriteState: LiveData<FavoriteState>
         get() {
-            if (!::_movieState.isInitialized) {
-                _movieState = MutableLiveData()
-                _movieState.value = ScreenState.Loading
-                repository = MovieRepository(application)
-                showFavorite(repository.getMovies().value.orEmpty())
+            if (!::_favoriteState.isInitialized) {
+                _favoriteState = MutableLiveData()
             }
-            return _movieState
+            return _favoriteState
         }
 
-    private fun showFavorite(movies: List<Movie>) {
-        //repository.insert(movie)
-        _movieState.value = ScreenState.Render(FavoriteState.ShowMovies(movies))
+    private fun findMovies(): LiveData<MutableList<Movie?>?>? {
+        return movieRepository.findAll()
+    }
+
+    fun getMoviesFavorite() {
+        val listNoEmpty = mutableListOf<Movie>()
+        movies?.observeOnce { list ->
+            list?.forEach {
+                if (it != null) {
+                    listNoEmpty.add(it)
+                }
+            }
+            showData(listNoEmpty)
+        }
+    }
+
+    private fun showData(listMovie: MutableList<Movie>) {
+        _favoriteState.value = FavoriteState.ShowMoviesFavorite(listMovie)
     }
 
     fun removeFavorite(movie: Movie) {
-        repository.delete(movie)
-        _movieState.value =
-            ScreenState.Render(FavoriteState.ShowMovies(repository.getMovies().value.orEmpty()))
+        AsyncTask.execute {
+            movieRepository.delete(movie)
+        }
+        _favoriteState.value = FavoriteState.RemoveMovie(movie)
     }
 
 }
 
 @Suppress("UNCHECKED_CAST")
-class FavoriteViewModelFactory(private val application: Application) :
+class FavoriteViewModelFactory(private val movieRepository: MovieRepository) :
     ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return FavoriteViewModel(application) as T
+        return FavoriteViewModel(movieRepository) as T
     }
 }

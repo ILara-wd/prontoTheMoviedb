@@ -5,20 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import mx.tupronto.prontomoviestest.MainActivity
 import mx.tupronto.prontomoviestest.R
-import mx.tupronto.prontomoviestest.ScreenState
-import mx.tupronto.prontomoviestest.model.Movie
+import mx.tupronto.prontomoviestest.data.Movie
 
 class FavoriteFragment : Fragment() {
 
     private lateinit var favoriteViewModel: FavoriteViewModel
     private lateinit var rvFav: RecyclerView
     private lateinit var favProgress: ProgressBar
+    private lateinit var adapter: FavoriteAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,7 +28,7 @@ class FavoriteFragment : Fragment() {
 
         favoriteViewModel = ViewModelProviders.of(
             this,
-            FavoriteViewModelFactory(requireActivity().application)
+            FavoriteViewModelFactory((activity as MainActivity).movieRepository)
         )[FavoriteViewModel::class.java]
 
         val root = inflater.inflate(R.layout.fragment_favorite, container, false)
@@ -37,42 +37,34 @@ class FavoriteFragment : Fragment() {
 
         favoriteViewModel.favoriteState.observe(::getLifecycle, ::updateUI)
 
+        favoriteViewModel.getMoviesFavorite()
+
         return root
     }
 
-    private fun updateUI(screenState: ScreenState<FavoriteState>?) {
-        when (screenState) {
-            ScreenState.Loading -> showProgress()
-            is ScreenState.Render -> processRenderState(screenState.renderState)
-        }
-    }
-
-    private fun showProgress() {
-        favProgress.visibility = View.VISIBLE
-        rvFav.visibility = View.GONE
-    }
-
-    private fun hideProgress() {
-        favProgress.visibility = View.GONE
-        rvFav.visibility = View.VISIBLE
-    }
-
-    private fun processRenderState(renderState: FavoriteState) {
-        hideProgress()
+    private fun updateUI(renderState: FavoriteState) {
         when (renderState) {
-            is FavoriteState.ShowMovies -> setItems(renderState.movies)
-            is FavoriteState.RemoveFavorite -> removeFavorite()
+            is FavoriteState.ShowMoviesFavorite -> setItems(renderState.moviesList)
+            is FavoriteState.RemoveMovie -> removeMovie(renderState.movie)
         }
     }
 
-    private fun setItems(movies: List<Movie>) {
-        rvFav.layoutManager = GridLayoutManager(activity, 2)
-        rvFav.adapter =
-            FavoriteAdapter(requireActivity(), movies, favoriteViewModel::removeFavorite)
+    private fun removeMovie(movie: Movie) {
+        adapter.removeItem(movie)
     }
 
-    private fun removeFavorite() {
-        Toast.makeText(activity, "Movie Remove", Toast.LENGTH_LONG).show()
+    private fun setItems(movies: MutableList<Movie>?) {
+        rvFav.layoutManager = GridLayoutManager(activity, 2)
+        adapter = FavoriteAdapter(
+            requireActivity(),
+            movies.orEmpty() as MutableList<Movie>,
+            this::onClickItem
+        )
+        rvFav.adapter = adapter
+    }
+
+    private fun onClickItem(movie: Movie) {
+        favoriteViewModel.removeFavorite(movie)
     }
 
 }

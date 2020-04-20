@@ -7,15 +7,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import mx.tupronto.prontomoviestest.MovieTools
 import mx.tupronto.prontomoviestest.R
-import mx.tupronto.prontomoviestest.model.Movie
+import mx.tupronto.prontomoviestest.data.Movie
 import mx.tupronto.prontomoviestest.service.MovieConstants
+import mx.tupronto.prontomoviestest.utility.MovieTools
+import kotlin.reflect.KFunction1
 
 class FavoriteAdapter(
     private val mActivity: Activity,
-    private val items: List<Movie>,
-    private val removeFavorite: (Movie) -> Unit
+    private val items: MutableList<Movie>,
+    private val onClickItem: KFunction1<Movie, Unit>
 ) :
     RecyclerView.Adapter<FavoriteAdapter.FavoriteViewHolder>() {
 
@@ -33,10 +34,7 @@ class FavoriteAdapter(
         holder.ivFavorite.setImageResource(R.drawable.ic_favorite_red)
         holder.ivFavorite.contentDescription =
             mActivity.getString(R.string.content_description_selected)
-        holder.ivFavorite.setOnClickListener {
-            changeIconFavorite(holder.ivFavorite)
-            removeFavorite(movie)
-        }
+        holder.ivFavorite.setOnClickListener { onClickItem(movie) }
 
         MovieTools().showImageByUrl(
             MovieConstants.IMAGE_URL + movie.posterPath,
@@ -46,18 +44,9 @@ class FavoriteAdapter(
 
     }
 
-    private fun changeIconFavorite(imageView: ImageView): Boolean {
-        return if (imageView.contentDescription.toString() == mActivity.getString(R.string.content_description_selected)) {
-            imageView.contentDescription =
-                mActivity.getString(R.string.content_description_unselected)
-            imageView.setImageResource(R.drawable.ic_favorite_border)
-            false
-        } else {
-            imageView.setImageResource(R.drawable.ic_favorite_red)
-            imageView.contentDescription =
-                mActivity.getString(R.string.content_description_selected)
-            true
-        }
+    fun removeItem(position: Movie) {
+        items.remove(position)
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = items.size

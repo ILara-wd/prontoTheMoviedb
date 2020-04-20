@@ -7,12 +7,22 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import mx.tupronto.prontomoviestest.di.AppModule
+import mx.tupronto.prontomoviestest.di.DaggerAppComponent
+import mx.tupronto.prontomoviestest.di.RoomModule
+import mx.tupronto.prontomoviestest.repository.MovieRepository
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var movieRepository: MovieRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        daggerComponentInit()
+
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
         val navController = findNavController(R.id.nav_host_fragment)
@@ -25,5 +35,15 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
     }
+
+    private fun daggerComponentInit() {
+        DaggerAppComponent.builder()
+            .appModule(AppModule(application))
+            .roomModule(RoomModule(application))
+            .build()
+            .inject(this)
+    }
+
 }
