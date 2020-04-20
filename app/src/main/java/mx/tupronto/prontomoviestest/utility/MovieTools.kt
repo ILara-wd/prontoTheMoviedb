@@ -1,9 +1,10 @@
-package mx.tupronto.prontomoviestest
+package mx.tupronto.prontomoviestest.utility
 
 import android.app.Activity
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import mx.tupronto.prontomoviestest.R
 
 class MovieTools {
 

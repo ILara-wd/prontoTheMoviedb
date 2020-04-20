@@ -1,22 +1,22 @@
 package mx.tupronto.prontomoviestest.ui.movie
 
-import android.app.Application
+import android.os.AsyncTask
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import mx.tupronto.prontomoviestest.ScreenState
-import mx.tupronto.prontomoviestest.model.Movie
+import mx.tupronto.prontomoviestest.data.Movie
 import mx.tupronto.prontomoviestest.repository.MovieRepository
 import mx.tupronto.prontomoviestest.service.data.APIError
 import mx.tupronto.prontomoviestest.service.data.MovieInput
+import mx.tupronto.prontomoviestest.utility.ScreenState
+import mx.tupronto.prontomoviestest.utility.observeOnce
 
 class MovieViewModel(
     private val movieInteract: MovieInteract,
-    private val application: Application
+    private val movieRepository: MovieRepository
 ) : ViewModel(), ImplMovieInteract {
 
-    private lateinit var repository: MovieRepository
     private lateinit var _movieState: MutableLiveData<ScreenState<MovieState>>
 
     val movieState: LiveData<ScreenState<MovieState>>
@@ -25,13 +25,31 @@ class MovieViewModel(
                 _movieState = MutableLiveData()
                 _movieState.value = ScreenState.Loading
                 movieInteract.setInterfaceInteract(this)
-                repository = MovieRepository(application)
             }
             return _movieState
         }
 
-    override fun getResponseData(data: MutableList<MovieInput>?, isFirstPage: Boolean) {
-        _movieState.value = ScreenState.Render(MovieState.ShowItems(data, isFirstPage))
+    override fun getResponseData(dataWS: MutableList<MovieInput>?, isFirstPage: Boolean) {
+        val dataLis = mutableListOf<MovieInput>()
+        movieRepository.findAll()?.observeOnce { itList ->
+            dataWS.orEmpty().forEach {
+                val movieInput = it
+                movieInput.isFavorite = compareData(it, itList)
+                dataLis.add(movieInput)
+            }
+            _movieState.value = ScreenState.Render(MovieState.ShowItems(dataLis, isFirstPage))
+        }
+    }
+
+    private fun compareData(movie: MovieInput?, dataWS: MutableList<Movie?>?): Boolean {
+        var exist = false
+        dataWS.orEmpty().forEach {
+            exist = it?.id == movie?.id
+            if (exist) {
+                return exist
+            }
+        }
+        return exist
     }
 
     override fun trowError(error: APIError) {
@@ -40,17 +58,18 @@ class MovieViewModel(
     }
 
     fun onItemClicked(movieInput: MovieInput, isAddFavorite: Boolean) {
-
         val movie = Movie(movieInput)
-
         if (isAddFavorite) {
-            repository.insert(movie)
+            AsyncTask.execute {
+                movieRepository.insert(movie)
+            }
             _movieState.value = ScreenState.Render(MovieState.AddFavorite(movieInput))
         } else {
-            repository.delete(movie)
+            AsyncTask.execute {
+                movieRepository.delete(movie)
+            }
             _movieState.value = ScreenState.Render(MovieState.RemoveFavorite(movieInput))
         }
-
     }
 
     fun getMovies(page: Int) {
@@ -62,10 +81,10 @@ class MovieViewModel(
 @Suppress("UNCHECKED_CAST")
 class MovieViewModelFactory(
     private val mainInteract: MovieInteract,
-    private val application: Application
+    private val movieRepository: MovieRepository
 ) :
     ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return MovieViewModel(mainInteract, application) as T
+        return MovieViewModel(mainInteract, movieRepository) as T
     }
 }
