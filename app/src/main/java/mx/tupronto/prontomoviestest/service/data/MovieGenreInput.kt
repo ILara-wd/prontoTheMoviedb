@@ -1,5 +1,7 @@
 package mx.tupronto.prontomoviestest.service.data
 
+import mx.tupronto.prontomoviestest.data.Movie
+
 class MovieGenreInput {
     val page: Int? = null
     val total_results: Int? = null
@@ -8,18 +10,36 @@ class MovieGenreInput {
 }
 
 class MovieInput {
-    val popularity: Double? = null
-    val vote_count: Int? = null
-    val video: Boolean? = null
-    val poster_path: String? = null
-    val id: Int? = null
-    val adult: Boolean? = null
-    val backdrop_path: String? = null
-    val original_language: String? = null
-    val original_title: String? = null
-    val genre_ids: List<Int>? = null
-    val title: String? = null
-    val vote_average: Double? = null
-    val overview: String? = null
-    val release_date: String? = null
+    var popularity: Double? = null
+    var vote_count: Int? = null
+    var video: Boolean? = null
+    var poster_path: String? = null
+    var id: Int? = null
+    var adult: Boolean? = null
+    var backdrop_path: String? = null
+    var original_language: String? = null
+    var original_title: String? = null
+    var title: String? = null
+    var vote_average: Double? = null
+    var overview: String? = null
+    var release_date: String? = null
+    var isFavorite: Boolean = false
+
+    constructor(movie: Movie?) {
+        this.popularity = movie?.popularity
+        this.vote_count = movie?.voteCount
+        this.video = movie?.video
+        this.poster_path = movie?.posterPath
+        this.id = movie?.id
+        this.adult = movie?.adult
+        this.backdrop_path = movie?.backdropPath
+        this.original_language = movie?.originalLanguage
+        this.original_title = movie?.originalTitle
+        this.title = movie?.title
+        this.vote_average = movie?.voteAverage
+        this.overview = movie?.overview
+        this.release_date = movie?.releaseDate
+        this.isFavorite = false
+    }
+
 }

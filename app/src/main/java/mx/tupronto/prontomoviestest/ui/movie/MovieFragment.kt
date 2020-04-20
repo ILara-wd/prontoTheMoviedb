@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import mx.tupronto.prontomoviestest.MainActivity
 import mx.tupronto.prontomoviestest.R
 import mx.tupronto.prontomoviestest.service.data.MovieInput
 import mx.tupronto.prontomoviestest.utility.ScreenState
@@ -32,7 +33,10 @@ class MovieFragment : Fragment() {
 
         movieViewModel = ViewModelProviders.of(
             this,
-            MovieViewModelFactory(MovieInteract(), requireActivity().application)
+            MovieViewModelFactory(
+                MovieInteract(),
+                (requireActivity() as MainActivity).movieRepository
+            )
         )[MovieViewModel::class.java]
 
         val root = inflater.inflate(R.layout.fragment_movie, container, false)
@@ -56,7 +60,7 @@ class MovieFragment : Fragment() {
     private fun processRenderState(renderState: MovieState) {
         hideProgress()
         when (renderState) {
-            is MovieState.ShowItems -> setItems(renderState.movies, renderState.isFirstPage)
+            is MovieState.ShowItems -> setItems(renderState.dataWS, renderState.isFirstPage)
             is MovieState.ShowMessage -> showMessage(renderState.message)
             is MovieState.AddFavorite -> addFavorite()
             is MovieState.RemoveFavorite -> removeFavorite()
@@ -64,11 +68,11 @@ class MovieFragment : Fragment() {
     }
 
     private fun addFavorite() {
-        /*Toast.makeText(activity, "Movie Add", Toast.LENGTH_LONG).show()*/
+        Toast.makeText(activity, "Movie Add", Toast.LENGTH_LONG).show()
     }
 
     private fun removeFavorite() {
-        /*Toast.makeText(activity, "Movie Remove", Toast.LENGTH_LONG).show()*/
+        Toast.makeText(activity, "Movie Remove", Toast.LENGTH_LONG).show()
     }
 
     private fun showProgress() {
@@ -89,11 +93,13 @@ class MovieFragment : Fragment() {
         if (isFirstPage) {
             managerLayout = GridLayoutManager(activity, 2)
             rvMovies.layoutManager = managerLayout
+
             adapter = MovieAdapter(
                 requireActivity(),
                 items.orEmpty() as MutableList<MovieInput>,
                 movieViewModel::onItemClicked
             )
+
             rvMovies.adapter = adapter
         } else {
             adapter.addMoviesPaginate(items.orEmpty())
@@ -116,7 +122,6 @@ class MovieFragment : Fragment() {
         val visibleItemCount = managerLayout.childCount
         val totalItemCount = managerLayout.itemCount
         val pastVisibleItems = managerLayout.findFirstVisibleItemPosition()
-
         if (loadMovies) {
             if (visibleItemCount + pastVisibleItems >= totalItemCount - 5) {
                 loadMovies = false

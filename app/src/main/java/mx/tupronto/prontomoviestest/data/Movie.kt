@@ -52,20 +52,20 @@ class Movie() {
     @ColumnInfo(name = "id")
     var id: Int = 0
 
-    constructor(movieInput: MovieInput) : this() {
-        this.popularity = movieInput.popularity.toString().toDouble()
-        this.voteCount = movieInput.vote_count.toString().toInt()
-        this.video = movieInput.video.toString().toBoolean()
-        this.posterPath = movieInput.poster_path.toString()
-        this.adult = movieInput.adult.toString().toBoolean()
-        this.backdropPath = movieInput.backdrop_path.toString()
-        this.originalLanguage = movieInput.original_language.toString()
-        this.originalTitle = movieInput.original_title.toString()
-        this.title = movieInput.title.toString()
-        this.voteAverage = movieInput.vote_average.toString().toDouble()
-        this.overview = movieInput.overview.toString()
-        this.releaseDate = movieInput.release_date.toString()
-        this.id = movieInput.id.toString().toInt()
+    constructor(movieInput: MovieInput?) : this() {
+        this.popularity = movieInput?.popularity.toString().toDouble()
+        this.voteCount = movieInput?.vote_count.toString().toInt()
+        this.video = movieInput?.video.toString().toBoolean()
+        this.posterPath = movieInput?.poster_path.toString()
+        this.adult = movieInput?.adult.toString().toBoolean()
+        this.backdropPath = movieInput?.backdrop_path.toString()
+        this.originalLanguage = movieInput?.original_language.toString()
+        this.originalTitle = movieInput?.original_title.toString()
+        this.title = movieInput?.title.toString()
+        this.voteAverage = movieInput?.vote_average.toString().toDouble()
+        this.overview = movieInput?.overview.toString()
+        this.releaseDate = movieInput?.release_date.toString()
+        this.id = movieInput?.id.toString().toInt()
     }
 
 }

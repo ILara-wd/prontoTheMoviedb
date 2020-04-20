@@ -34,9 +34,7 @@ class FavoriteAdapter(
         holder.ivFavorite.setImageResource(R.drawable.ic_favorite_red)
         holder.ivFavorite.contentDescription =
             mActivity.getString(R.string.content_description_selected)
-        holder.ivFavorite.setOnClickListener {
-            onClickItem(movie)
-        }
+        holder.ivFavorite.setOnClickListener { onClickItem(movie) }
 
         MovieTools().showImageByUrl(
             MovieConstants.IMAGE_URL + movie.posterPath,
